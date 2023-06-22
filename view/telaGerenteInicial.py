@@ -6,7 +6,7 @@ class TelaGerenteInicial(QMainWindow):
     def __init__(self, tela_login):
         super().__init__()
 
-        loadUi("view/TelaGerenteInicial.ui", self)
+        loadUi("../view/TelaGerenteInicial.ui", self)
 
         from fachada.fachada import Fachada
 

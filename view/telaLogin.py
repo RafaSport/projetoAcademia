@@ -19,7 +19,7 @@ class TelaLogin(QMainWindow):
     """
     def __init__(self):
         super().__init__()
-        loadUi("view/TelaLogin.ui", self)
+        loadUi("../view/TelaLogin.ui", self)
         self.btnEntrar.clicked.connect(self.efetuar_login) # evento quando clica no botão entrar
         self.lineEmail.returnPressed.connect(self.efetuar_login)#evento quando aperta a tecla enter do teclado
         self.lineSenha.returnPressed.connect(self.efetuar_login)#evento quando aperta a tecla enter do teclado

@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication
-from view.telaLogin import TelaLogin
+from .telaLogin import TelaLogin
 from model.aluno import Aluno
 from model.gerente import Gerente
 from model.professor import Professor

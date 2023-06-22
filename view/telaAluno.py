@@ -13,7 +13,7 @@ class TelaAluno(QMainWindow):
         f = Fachada.get_instance()
 
 
-        loadUi("view/TelaAluno.ui", self)
+        loadUi("../view/TelaAluno.ui", self)
         self.tela_anterior = tela_login  # Armazena a referência da tela_login
 
         self.lblNome.setText(f.pessoaLogada.nome)

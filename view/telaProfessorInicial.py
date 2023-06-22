@@ -6,7 +6,7 @@ class TelaProfessorInicial(QMainWindow):
     def __init__(self, tela_login):
         super().__init__()
 
-        loadUi("view/TelaProfessorInicial.ui", self)
+        loadUi("../view/TelaProfessorInicial.ui", self)
 
         self.tela_anterior = tela_login  # Armazena a referência da tela_login
 
