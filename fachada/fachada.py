@@ -1,7 +1,6 @@
 from controller.controladorPessoas import ControladorPessoa
 from controller.controladorTreinos import ControladorTreinos
 from controller.controladorTreinosExecutados import ControladorTreinosExecutados
-from controller.controladorTelas import ControladorTelas
 from model.aluno import Aluno
 from model.professor import Professor
 from model.gerente import Gerente
@@ -20,7 +19,7 @@ class Fachada:
         self.__controladorPessoa = ControladorPessoa.get_instance()
         self.__controladorTreino = ControladorTreinos.get_instance()
         self.__controladorTreinoExecutado = ControladorTreinosExecutados.get_instance()
-        self.__controladorTelas = ControladorTelas.get_instance()
+        #self.__controladorTelas = ControladorTelas.get_instance()
 
         self.__pessoaLogada = None
 
@@ -44,9 +43,9 @@ class Fachada:
     def controladorTreinoExecutado(self):
         return self.__controladorTreinoExecutado
 
-    @property
-    def controladorTelas(self):
-        return self.__controladorTelas
+    #@property
+    #def controladorTelas(self):
+    #    return self.__controladorTelas
 
 #------------------------------Controle de Pessoas-------------------------------------
 
@@ -75,29 +74,19 @@ class Fachada:
         return self.__controladorPessoa.fazerLogin(email, senha)
 
 
+    #Recebe uma pessoa e retorna o tipo da pessoa emforma de string
+    def tipo_pessoa(self, pessoa):
+        if isinstance(pessoa, Aluno):
+            return 'aluno'
+        elif isinstance(pessoa, Gerente):
+            return 'gerente'
+        elif isinstance(pessoa, Professor):
+            return 'professor'
+
+
 #------------------------------Controle de Treinos-------------------------------------
 
 
 
 #--------------------------Controle de Treinos Executados------------------------------
 
-
-
-#--------------------------------Controle de Telas-------------------------------------
-
-    def abrir_tela_aluno(self, tela_anterior):
-        self.__controladorTelas.abrir_tela_aluno(tela_anterior)
-
-    def abrir_tela_professor(self, tela_anterior):
-        self.__controladorTelas.abrir_tela_professor(tela_anterior)
-
-    def abrir_tela_gerente(self, tela_anterior):
-        self.__controladorTelas.abrir_tela_gerente(tela_anterior)
-
-    def abrir_tela_inicial(self, tela_anterior):
-        if isinstance(self.__pessoaLogada, Aluno):
-            self.abrir_tela_aluno(tela_anterior)
-        elif isinstance(self.__pessoaLogada, Gerente):
-            self.abrir_tela_gerente(tela_anterior)
-        elif isinstance(self.__pessoaLogada, Professor):
-            self.abrir_tela_professor(tela_anterior)

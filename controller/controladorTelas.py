@@ -1,3 +1,4 @@
+"""
 from view.telaAluno import TelaAluno
 from view.telaGerenteInicial import TelaGerenteInicial
 from view.telaProfessorInicial import TelaProfessorInicial
@@ -36,3 +37,4 @@ class ControladorTelas:
 # Exemplo de uso:
 #controlador_telas = ControladorTelas()
 #controlador_telas.iniciar()
+"""

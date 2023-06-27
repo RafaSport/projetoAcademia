@@ -1,7 +1,10 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
-from fachada.fachada import Fachada
 from exception.excecoes import ObjetoNaoCadastradaException
+from fachada.fachada import Fachada
+from view.telaAluno import TelaAluno
+from view.telaGerenteInicial import TelaGerenteInicial
+from view.telaProfessorInicial import TelaProfessorInicial
 
 
 """
@@ -19,10 +22,13 @@ class TelaLogin(QMainWindow):
     """
     def __init__(self):
         super().__init__()
+
         loadUi("../view/TelaLogin.ui", self)
+
         self.btnEntrar.clicked.connect(self.efetuar_login) # evento quando clica no botão entrar
         self.lineEmail.returnPressed.connect(self.efetuar_login)#evento quando aperta a tecla enter do teclado
         self.lineSenha.returnPressed.connect(self.efetuar_login)#evento quando aperta a tecla enter do teclado
+
         self.tela_aluno = None
         self.tela_gerente = None
         self.tela_professor = None
@@ -44,7 +50,7 @@ class TelaLogin(QMainWindow):
 
             # Metodo abre a tela inicial de cada tipo de pessoa verificando internamente
             # atraves do atributo pessoaLogada qual o tipo de pessoa (aluno, professor ou gerente)
-            fachada.abrir_tela_inicial(self)
+            self.abrir_proxima_tela()
 
         except ObjetoNaoCadastradaException as e:
             self.limpar_tela()
@@ -54,6 +60,30 @@ class TelaLogin(QMainWindow):
     def limpar_tela(self):
         self.lineEmail.setText('')  # Limpa o campo de e-mail
         self.lineSenha.setText('')  # Limpa o campo de senha
+        self.lineEmail.setFocus()  # Define o foco para o campo de e-mail
+
+    def abrir_proxima_tela(self):
+        if fachada.tipo_pessoa(fachada.pessoaLogada) == 'aluno':
+            self.abrir_tela_aluno()
+        elif fachada.tipo_pessoa(fachada.pessoaLogada) == 'gerente':
+            self.abrir_tela_gerente()
+        else:
+            self.abrir_tela_professor()
+
+    def abrir_tela_aluno(self):
+        self.__tela_aluno = TelaAluno(self)
+        self.hide()
+        self.__tela_aluno.show()
+
+    def abrir_tela_gerente(self):
+        self.__tela_gerente = TelaGerenteInicial(self)
+        self.hide()
+        self.__tela_gerente.show()
+
+    def abrir_tela_professor(self):
+        self.__tela_professor = TelaProfessorInicial(self)
+        self.hide()
+        self.__tela_professor.show()
 
     def exibir_mensagem_erro(self, mensagem):
         msg_box = QMessageBox()
