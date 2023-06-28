@@ -1,8 +1,12 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QHeaderView
+from PyQt5.QtWidgets import QMainWindow, QHeaderView, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
+
+from exception.excecoes import ObjetoNaoCadastradaException
 from fachada.fachada import Fachada
+from utilidades import uteis
+from datetime import datetime
 
 
 f = Fachada.get_instance()
@@ -18,6 +22,13 @@ class TelaAluno(QMainWindow):
         loadUi("../view/TelaAluno.ui", self)
         self.tela_anterior = tela_login  # Armazena a referência da tela_login
 
+        # Coloca a data de validade do treino para o aluno
+        data_validade = f.pessoaLogada.planoTreino.validade
+        self.lblValidade.setText(uteis.data_para_string(data_validade))
+
+        # Atualiza as informações de data, hora e dia da semana na tela
+        uteis.obtem_datas_horas_dia(datetime.now(), self.lblData, self.lblHora, self.lblDia)
+
         self.lblNome.setText(f.pessoaLogada.nome)
         self.btnSair.clicked.connect(self.sair_do_sistema)
 
@@ -27,9 +38,13 @@ class TelaAluno(QMainWindow):
         self.modeloTabela.setColumnCount(3)
         self.modeloTabela.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
 
-        treino = f.consultarTreinoDeHoje(f.pessoaLogada)
+        try:
+            treino = f.consultarTreinoDeHoje(f.pessoaLogada)
 
-        self.preenche_tabela_exercicios(treino)
+            self.preenche_tabela_exercicios(treino)
+        except ObjetoNaoCadastradaException as e:
+
+            self.exibir_mensagem_erro(str(e))
 
 
 
@@ -71,3 +86,11 @@ class TelaAluno(QMainWindow):
         self.hide()  # Esconde a tela atual
         self.tela_anterior.limpar_tela()
         self.tela_anterior.show()
+
+    def exibir_mensagem_erro(self, mensagem):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Warning)
+        msg_box.setText("Erro de Treino")
+        msg_box.setInformativeText(mensagem)
+        msg_box.setWindowTitle("Erro")
+        msg_box.exec()

@@ -15,12 +15,6 @@ def calcular_idade(nascimento):
 
     return idade
 
-def data_para_string(data):
-
-    # Converter a data em uma string com o formato desejado
-    data_string = data.strftime("%d/%m/%Y")  # Formato: dia/mês/ano
-
-    return data_string
 
 def string_para_data(data_string):
 
@@ -30,6 +24,72 @@ def string_para_data(data_string):
     data = datetime.strptime(data_string, formato)
 
     return data
+
+
+def data_para_string(data):
+    """
+    Converte um objeto datetime em uma string formatada (DD/MM/AAAA).
+    :param data: objeto datetime contendo a data a ser convertida
+    :return: string formatada da data (DD/MM/AAAA)
+    """
+    return data.strftime("%d/%m/%Y")
+
+
+def hora_para_string(data):
+    """
+    Converte um objeto datetime em uma string formatada (HH:MM).
+    :param data: objeto datetime contendo a hora a ser convertida
+    :return: string formatada da hora (HH:MM)
+    """
+    return data.strftime("%H:%M")
+
+
+def obter_nome_dia_semana(data):
+    """
+    Obtém o nome do dia da semana em português a partir de um objeto datetime.
+    :param data: objeto datetime contendo a data para obter o dia da semana
+    :return: string contendo o nome do dia da semana em português
+    """
+    import calendar
+
+    dias_semana_pt = {
+        0: 'Segunda-feira',
+        1: 'Terça-feira',
+        2: 'Quarta-feira',
+        3: 'Quinta-feira',
+        4: 'Sexta-feira',
+        5: 'Sábado',
+        6: 'Domingo'
+    }
+
+    numero_dia_semana = data.weekday()
+    nome_dia_semana = dias_semana_pt.get(numero_dia_semana, '')
+    return nome_dia_semana
+
+def obtem_datas_horas_dia(data, labelData, labelHora, labelDia):
+    """
+    Atualiza as labels de data, hora e dia da semana com as
+    informações obtidas a partir de uma data fornecida.
+
+    :param data: Objeto datetime contendo a data e hora a serem exibidas.
+    :param labelData: QLabel que representa a label onde a data será exibida.
+    :param labelHora: QLabel que representa a label onde a hora será exibida.
+    :param labelDia: QLabel que representa a label onde o dia da semana será exibido.
+    """
+    # Obter a data formatada
+    data_formatada = data_para_string(data)
+
+    # Obter a hora formatada
+    hora_formatada = hora_para_string(data)
+
+    # Obter o dia da semana em português
+    dia_da_semana = obter_nome_dia_semana(data)
+
+    # Atualizar as labels com as informações obtidas
+    labelData.setText(data_formatada)
+    labelHora.setText(hora_formatada)
+    labelDia.setText(dia_da_semana)
+
 
 def senha_disponivel(lista, senha):
     s = True
