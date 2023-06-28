@@ -8,7 +8,7 @@ class Aluno(Pessoa):
         super().__init__(nome, cpf, email, nascimento, senha)
         self.__matricula = matricula
         self.__mesPago = datetime.now()
-        self.__planoTreino = PlanoTreino(datetime.now())
+        self.__planoTreino = PlanoTreino()
         self.__treinosExecutados = []
 
     @property
@@ -37,6 +37,10 @@ class Aluno(Pessoa):
     @mesPago.setter
     def mesPago(self, outro):
         self.__mesPago = outro
+
+    @planoTreino.setter
+    def planoTreino(self, outro):
+        self.__planoTreino = outro
 
     def __eq__(self, other):
         return super().__eq__(other)

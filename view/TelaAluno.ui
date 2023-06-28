@@ -90,6 +90,16 @@
      <string>Sair</string>
     </property>
    </widget>
+   <widget class="QTableView" name="tabelaExercicios">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>130</y>
+      <width>411</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

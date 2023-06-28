@@ -74,7 +74,7 @@ class Fachada:
         return self.__controladorPessoa.fazerLogin(email, senha)
 
 
-    #Recebe uma pessoa e retorna o tipo da pessoa emforma de string
+    #Recebe uma pessoa e retorna o tipo da pessoa em forma de string
     def tipo_pessoa(self, pessoa):
         if isinstance(pessoa, Aluno):
             return 'aluno'
@@ -85,6 +85,20 @@ class Fachada:
 
 
 #------------------------------Controle de Treinos-------------------------------------
+    def cadastraExerciciosNumTreino(self, listaExercicios):
+        return self.__controladorTreino.cadastraExerciciosNumTreino(listaExercicios)
+
+    def cadastrarTreinosParaAluno(self, aluno: Aluno, treino_A, treino_B, treino_C):
+        self.__controladorTreino.cadastrarTreinosParaAluno(aluno, treino_A, treino_B, treino_C)
+
+    def alterarTreino(self, aluno: Aluno, posicao, treinoNovo):
+        self.__controladorTreino.alterarTreino(aluno, posicao, treinoNovo)
+
+    def consultarTreinos(self, aluno: Aluno):
+        return self.__controladorTreino.consultarTreinos(aluno)
+
+    def consultarTreinoDeHoje(self, aluno: Aluno):
+        return self.__controladorTreino.consultarTreinoDeHoje(aluno)
 
 
 

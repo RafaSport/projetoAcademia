@@ -42,7 +42,7 @@ class ControladorTreinos:
 
     def consultarTreinoDeHoje(self, aluno: Aluno):
         """
-        Consulta o treino de hoje do aluno retornando a
+        Consulta o treino de hoje do aluno retornando o treino do dia
         :param aluno:
         :return:
         """
