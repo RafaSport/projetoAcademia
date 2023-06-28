@@ -45,7 +45,7 @@ lista3.append(ex5)
 
 treinoC = f.cadastraExerciciosNumTreino(lista3)
 
-#f.cadastrarTreinosParaAluno(a1, treinoA, treinoB, treinoC)
+f.cadastrarTreinosParaAluno(a1, treinoA, treinoB, treinoC)
 
 
 g1 = Gerente('Bob', '2222', 'bob@gmail.com', datetime(1995, 5, 15), '0000', '0002')

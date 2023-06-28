@@ -4,6 +4,7 @@ from controller.controladorTreinosExecutados import ControladorTreinosExecutados
 from model.aluno import Aluno
 from model.professor import Professor
 from model.gerente import Gerente
+from model.treino import Treino
 
 
 class Fachada:
@@ -88,19 +89,24 @@ class Fachada:
     def cadastraExerciciosNumTreino(self, listaExercicios):
         return self.__controladorTreino.cadastraExerciciosNumTreino(listaExercicios)
 
-    def cadastrarTreinosParaAluno(self, aluno: Aluno, treino_A, treino_B, treino_C):
+    def cadastrarTreinosParaAluno(self, aluno, treino_A, treino_B, treino_C):
         self.__controladorTreino.cadastrarTreinosParaAluno(aluno, treino_A, treino_B, treino_C)
 
     def alterarTreino(self, aluno: Aluno, posicao, treinoNovo):
         self.__controladorTreino.alterarTreino(aluno, posicao, treinoNovo)
 
-    def consultarTreinos(self, aluno: Aluno):
+    def consultarTreinos(self, aluno):
         return self.__controladorTreino.consultarTreinos(aluno)
 
-    def consultarTreinoDeHoje(self, aluno: Aluno):
+    def consultarTreinoDeHoje(self, aluno):
         return self.__controladorTreino.consultarTreinoDeHoje(aluno)
 
 
 
 #--------------------------Controle de Treinos Executados------------------------------
 
+    def listarTreinoExecutadoNaData(self, aluno, data):
+        return self.__controladorTreinoExecutado.salvarTreino(aluno, data)
+
+    def salvarTreinoExecutado(self, aluno, treino):
+        return self.__controladorTreinoExecutado.salvarTreinoExecutado(aluno, treino)

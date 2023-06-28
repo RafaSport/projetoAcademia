@@ -3,8 +3,9 @@ from PyQt5.QtWidgets import QMainWindow, QHeaderView, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 
-from exception.excecoes import ObjetoNaoCadastradaException
+from exception.excecoes import ObjetoNaoCadastradaException, ObjetoJaCadastradaException
 from fachada.fachada import Fachada
+from model.treinoExecutado import TreinoExecutado
 from utilidades import uteis
 from datetime import datetime
 
@@ -14,45 +15,44 @@ f = Fachada.get_instance()
 
 class TelaAluno(QMainWindow):
     """
-    Classe que recebe como parametro a tela anterior na navegação, ou seja, a tela de login
+    Classe que representa a tela do aluno.
     """
+
     def __init__(self, tela_login):
         super().__init__()
 
         loadUi("../view/TelaAluno.ui", self)
         self.tela_anterior = tela_login  # Armazena a referência da tela_login
+        self.treino = None
 
-        # Coloca a data de validade do treino para o aluno
-        data_validade = f.pessoaLogada.planoTreino.validade
-        self.lblValidade.setText(uteis.data_para_string(data_validade))
+        self.configurar_interface()
+        self.carregar_treino_do_dia()
 
-        # Atualiza as informações de data, hora e dia da semana na tela
-        uteis.obtem_datas_horas_dia(datetime.now(), self.lblData, self.lblHora, self.lblDia)
-
-        self.lblNome.setText(f.pessoaLogada.nome)
+    def configurar_interface(self):
+        """
+        Configura a interface da tela.
+        """
         self.btnSair.clicked.connect(self.sair_do_sistema)
+        self.btnSalvar.clicked.connect(self.salvar_treino)
 
-
-        # Criar o modelo de dados da tabela
         self.modeloTabela = QStandardItemModel()
         self.modeloTabela.setColumnCount(3)
         self.modeloTabela.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
 
+    def carregar_treino_do_dia(self):
+        """
+        Carrega o treino do dia do aluno e preenche a tabela.
+        """
         try:
-            treino = f.consultarTreinoDeHoje(f.pessoaLogada)
-
-            self.preenche_tabela_exercicios(treino)
+            self.treino = f.consultarTreinoDeHoje(f.pessoaLogada)
+            self.preenche_tabela_exercicios(self.treino)
         except ObjetoNaoCadastradaException as e:
-
             self.exibir_mensagem_erro(str(e))
-
-
 
     def preenche_tabela_exercicios(self, treino):
         """
-        Recebe o treino do dia do aluno e preenche a tabela
-        :param treino:
-        :return: a tabela preenchida com o treino no dia
+        Preenche a tabela com os exercícios do treino do dia.
+        :param treino: O treino do dia do aluno.
         """
         for exercicio in treino.exercicios:
             nome_item = QStandardItem(exercicio.nome)
@@ -66,31 +66,65 @@ class TelaAluno(QMainWindow):
 
             self.modeloTabela.appendRow([nome_item, serie_item, repeticao_item])
 
-        # Configurar a tabela com o modelo de dados
+        self.configurar_tabela()
+
+    def configurar_tabela(self):
+        """
+        Configura a tabela com o modelo de dados e ajusta o redimensionamento das colunas e linhas.
+        """
         self.tabelaExercicios.setModel(self.modeloTabela)
 
-        # Ajustar o redimensionamento automático das colunas
         self.tabelaExercicios.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
-        # Ajustar o redimensionamento automático das linhas
         self.tabelaExercicios.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
+    def salvar_treino(self):
+        if self.treino:
+            treino_executado = TreinoExecutado(datetime.now(), self.treino)
+            try:
+                f.salvarTreinoExecutado(f.pessoaLogada, treino_executado)
+                self.exibir_mensagem_sucesso('Treino cadastrado com sucesso!')
+    
+            except ObjetoJaCadastradaException:
+                self.exibir_mensagem_erro('Treino já cadastrado!')
+        else:
+            self.exibir_mensagem_erro('Treino não cadastrado!')
 
     def sair_do_sistema(self):
-
+        """
+        Sai do sistema e retorna para a tela de login.
+        """
         f.pessoaLogada = None
-
         self.abrir_tela_login()
+        self.close()
 
     def abrir_tela_login(self):
-        self.hide()  # Esconde a tela atual
+        """
+        Abre a tela de login e esconde a tela atual.
+        """
+        self.hide()
         self.tela_anterior.limpar_tela()
         self.tela_anterior.show()
 
     def exibir_mensagem_erro(self, mensagem):
+        """
+        Exibe uma mensagem de erro.
+        :param mensagem: A mensagem de erro a ser exibida.
+        """
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Warning)
         msg_box.setText("Erro de Treino")
         msg_box.setInformativeText(mensagem)
         msg_box.setWindowTitle("Erro")
+        msg_box.exec()
+
+    def exibir_mensagem_sucesso(self, mensagem):
+        """
+        Exibe uma mensagem de sucesso.
+        :param mensagem: A mensagem de sucesso a ser exibida.
+        """
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setText("Operação realizada!")
+        msg_box.setInformativeText(mensagem)
+        msg_box.setWindowTitle("Sucesso")
         msg_box.exec()
