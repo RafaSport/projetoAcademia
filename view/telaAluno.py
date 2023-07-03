@@ -1,17 +1,15 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QMainWindow, QHeaderView, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 
-from exception.excecoes import ObjetoNaoCadastradaException, ObjetoJaCadastradaException
+from exception.excecoes import ObjetoNaoCadastradaException, ObjetoJaCadastradaException, DataInvalidaException
 from fachada.fachada import Fachada
 from model.treinoExecutado import TreinoExecutado
-from utilidades import uteis
 from datetime import datetime
-
+from utilidades import uteis
 
 f = Fachada.get_instance()
-
 
 class TelaAluno(QMainWindow):
     """
@@ -32,12 +30,30 @@ class TelaAluno(QMainWindow):
         """
         Configura a interface da tela.
         """
+        # Informa a data, hora e dia do login
+        uteis.obtem_datas_horas_dia(datetime.now(), self.lblData, self.lblHora, self.lblDia)
+        self.lblNome.setText(f.pessoaLogada.nome)
+
         self.btnSair.clicked.connect(self.sair_do_sistema)
         self.btnSalvar.clicked.connect(self.salvar_treino)
+        self.btnBuscar.clicked.connect(self.buscar_treino_executado)
 
         self.modeloTabela = QStandardItemModel()
         self.modeloTabela.setColumnCount(3)
         self.modeloTabela.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
+
+        self.modeloTabelaTreinoExecutado = QStandardItemModel()
+        self.modeloTabelaTreinoExecutado.setColumnCount(3)
+        self.modeloTabelaTreinoExecutado.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
+
+        # Obter a data atual
+        data_atual = QDate.currentDate()
+
+        # Definir a data atual no QDateEdit
+        self.dateEdit.setDate(data_atual)
+
+        # Definir o limite máximo da data como a data atual
+        self.dateEdit.setMaximumDate(data_atual)
 
     def carregar_treino_do_dia(self):
         """
@@ -83,7 +99,7 @@ class TelaAluno(QMainWindow):
             try:
                 f.salvarTreinoExecutado(f.pessoaLogada, treino_executado)
                 self.exibir_mensagem_sucesso('Treino cadastrado com sucesso!')
-    
+
             except ObjetoJaCadastradaException:
                 self.exibir_mensagem_erro('Treino já cadastrado!')
         else:
@@ -128,3 +144,48 @@ class TelaAluno(QMainWindow):
         msg_box.setInformativeText(mensagem)
         msg_box.setWindowTitle("Sucesso")
         msg_box.exec()
+
+    def buscar_treino_executado(self):
+        """
+        Busca o treino executado na data selecionada e preenche a tabela correspondente.
+        """
+        data_selecionada = self.dateEdit.date().toPyDate()  # Obtém a data selecionada
+
+        try:
+            treino_executado = f.listarTreinoExecutadoNaData(f.pessoaLogada, data_selecionada)
+            self.preenche_tabela_treino_executado(treino_executado)
+        except DataInvalidaException:
+            self.exibir_mensagem_erro("Data inválida!")
+        except ObjetoNaoCadastradaException as e:
+            self.exibir_mensagem_erro(str(e))
+
+    def preenche_tabela_treino_executado(self, treino_executado):
+        """
+        Preenche a tabela com os exercícios do treino executado.
+        :param treino_executado: O treino executado a ser exibido na tabela.
+        """
+        self.modeloTabelaTreinoExecutado.clear()  # Limpa o modelo de dados atual
+
+        if treino_executado:
+            for exercicio in treino_executado.treino.exercicios:
+                nome_item = QStandardItem(exercicio.nome)
+                serie_item = QStandardItem(str(exercicio.serie))
+                repeticao_item = QStandardItem(str(exercicio.repeticao))
+
+                # Definir o alinhamento dos dados como centralizado
+                nome_item.setTextAlignment(Qt.AlignCenter)
+                serie_item.setTextAlignment(Qt.AlignCenter)
+                repeticao_item.setTextAlignment(Qt.AlignCenter)
+
+                self.modeloTabelaTreinoExecutado.appendRow([nome_item, serie_item, repeticao_item])
+
+            self.configurar_tabela_treino_executado()
+
+    def configurar_tabela_treino_executado(self):
+        """
+        Configura a tabela do treino executado com o modelo de dados e ajusta o redimensionamento das colunas e linhas.
+        """
+        self.tabelaTreinoExecutado.setModel(self.modeloTabelaTreinoExecutado)
+
+        self.tabelaTreinoExecutado.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tabelaTreinoExecutado.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
