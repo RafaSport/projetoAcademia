@@ -106,7 +106,7 @@ class Fachada:
 #--------------------------Controle de Treinos Executados------------------------------
 
     def listarTreinoExecutadoNaData(self, aluno, data):
-        return self.__controladorTreinoExecutado.salvarTreino(aluno, data)
+        return self.__controladorTreinoExecutado.listarTreinoExecutadoNaData(aluno, data)
 
     def salvarTreinoExecutado(self, aluno, treino):
         return self.__controladorTreinoExecutado.salvarTreinoExecutado(aluno, treino)

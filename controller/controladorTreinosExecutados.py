@@ -1,7 +1,7 @@
 from model.aluno import Aluno
 from model.treino import Treino
 from copy import deepcopy
-from datetime import datetime
+from datetime import date, datetime
 
 from model.treinoExecutado import TreinoExecutado
 from utilidades import uteis
@@ -16,7 +16,7 @@ class ControladorTreinosExecutados:
             ControladorTreinosExecutados.__instance = ControladorTreinosExecutados()
         return ControladorTreinosExecutados.__instance
 
-    def listarTreinoExecutadoNaData(self, aluno: Aluno, data):
+    def listarTreinoExecutadoNaData(self, aluno: Aluno, data: datetime):
         """
         Lista o treino executado pelo aluno em uma data específica.
 
@@ -26,10 +26,14 @@ class ControladorTreinosExecutados:
         :raises DataInvalidaException: se a data fornecida for inválida (posterior à data atual)
         :raises ObjetoNaoCadastradaException: se não houver treino executado na data especificada
         """
+        print("1 listar executed")
         treinoExecutado = None
-        if uteis.verificar_data_valida(data) and data <= datetime.now():
+        print("2 listar executed")
+        if uteis.verificar_data_valida(data) and datetime.today().date() >= data.date():
+            print("3 listar executed")
             for t in aluno.treinosExecutados:
-                if t.data == data:
+                print("4 listar executed")
+                if uteis.data_para_string(data) == uteis.data_para_string(t.data):
                     treinoExecutado = t
                     break
             if treinoExecutado:

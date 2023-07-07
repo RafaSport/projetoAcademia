@@ -118,11 +118,13 @@ def diaDaSemanaParaIndice(data):
     else:
         return -1
 
-def verificar_data_valida(data):
+from datetime import datetime
+
+def verificar_data_valida(data: datetime):
     data_valida = True
 
     try:
-        datetime(data)
+        datetime.combine(data.date(), datetime.min.time())
     except ValueError:
         data_valida = False
 

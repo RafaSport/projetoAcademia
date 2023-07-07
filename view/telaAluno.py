@@ -1,3 +1,5 @@
+import traceback
+
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QMainWindow, QHeaderView, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
@@ -6,7 +8,7 @@ from PyQt5.uic import loadUi
 from exception.excecoes import ObjetoNaoCadastradaException, ObjetoJaCadastradaException, DataInvalidaException
 from fachada.fachada import Fachada
 from model.treinoExecutado import TreinoExecutado
-from datetime import datetime
+from datetime import datetime, date
 from utilidades import uteis
 
 f = Fachada.get_instance()
@@ -149,15 +151,22 @@ class TelaAluno(QMainWindow):
         """
         Busca o treino executado na data selecionada e preenche a tabela correspondente.
         """
-        data_selecionada = self.dateEdit.date().toPyDate()  # Obtém a data selecionada
-
+        print("1 buscar_treino_executado() executed")
+        data_selecionada = self.dateEdit.dateTime().toPyDateTime()  # Obtém a data selecionada como um objeto datetime
+        print("2 buscar_treino_executado() executed")
         try:
             treino_executado = f.listarTreinoExecutadoNaData(f.pessoaLogada, data_selecionada)
+            print("3 buscar_treino_executado() executed")
             self.preenche_tabela_treino_executado(treino_executado)
+            print("4 buscar_treino_executado() executed")
         except DataInvalidaException:
             self.exibir_mensagem_erro("Data inválida!")
         except ObjetoNaoCadastradaException as e:
             self.exibir_mensagem_erro(str(e))
+        except Exception as e:
+            print("Exception:", e)
+            traceback.print_exc()
+            self.exibir_mensagem_erro("Ocorreu um erro ao buscar o treino executado.")
 
     def preenche_tabela_treino_executado(self, treino_executado):
         """
