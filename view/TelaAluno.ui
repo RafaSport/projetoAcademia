@@ -215,7 +215,7 @@
      <string>Salvar</string>
     </property>
    </widget>
-   <widget class="QTableView" name="tablaExercicoExecutado">
+   <widget class="QTableView" name="tabelaExerciciosExecutado">
     <property name="geometry">
      <rect>
       <x>10</x>

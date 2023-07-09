@@ -162,6 +162,8 @@ class TelaAluno(QMainWindow):
         except DataInvalidaException:
             self.exibir_mensagem_erro("Data inválida!")
         except ObjetoNaoCadastradaException as e:
+            self.modeloTabelaTreinoExecutado.clear()
+            self.modeloTabelaTreinoExecutado.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
             self.exibir_mensagem_erro(str(e))
         except Exception as e:
             print("Exception:", e)
@@ -173,7 +175,8 @@ class TelaAluno(QMainWindow):
         Preenche a tabela com os exercícios do treino executado.
         :param treino_executado: O treino executado a ser exibido na tabela.
         """
-        self.modeloTabelaTreinoExecutado.clear()  # Limpa o modelo de dados atual
+        self.modeloTabelaTreinoExecutado.clear()
+        self.modeloTabelaTreinoExecutado.setHorizontalHeaderLabels(["Nome", "Série", "Duração"])
 
         if treino_executado:
             for exercicio in treino_executado.treino.exercicios:
@@ -194,7 +197,7 @@ class TelaAluno(QMainWindow):
         """
         Configura a tabela do treino executado com o modelo de dados e ajusta o redimensionamento das colunas e linhas.
         """
-        self.tabelaTreinoExecutado.setModel(self.modeloTabelaTreinoExecutado)
+        self.tabelaExerciciosExecutado.setModel(self.modeloTabelaTreinoExecutado)
 
-        self.tabelaTreinoExecutado.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tabelaTreinoExecutado.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tabelaExerciciosExecutado.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tabelaExerciciosExecutado.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
